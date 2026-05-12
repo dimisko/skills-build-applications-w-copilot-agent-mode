@@ -29,9 +29,14 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
+import os
 @api_view(['GET'])
 def api_root(request, format=None):
-    api_base = request.build_absolute_uri('/api/')
+    codespace_name = os.environ.get('CODESPACE_NAME')
+    if codespace_name:
+        api_base = f"https://{codespace_name}-8000.app.github.dev/api/"
+    else:
+        api_base = request.build_absolute_uri('/api/')
     return Response({
         'users': api_base + 'users/',
         'teams': api_base + 'teams/',
